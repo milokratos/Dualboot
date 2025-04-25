@@ -1,12 +1,12 @@
 const { test, expect } = require('@playwright/test');
-const path = require('path');
-const fs = require('fs');
+const dynamicId = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
 
-test('Add a new pet', async ({ request, page }) => {
+test('Add a new pet', async ({ request }) => {
 
     const url = 'https://petstore.swagger.io/v2';
+
     const petData = {
-        "id": 123,
+        "id": dynamicId,
         "category": {
             "id": 1,
             "name": "Dog"
@@ -36,16 +36,16 @@ test('Add a new pet', async ({ request, page }) => {
 
     // Parse the JSON response
     const responseBody = await response.json();
-    expect(responseBody).toHaveProperty('id', 123);
+    expect(responseBody).toHaveProperty('id', dynamicId);
     expect(responseBody).toHaveProperty('name', 'Bruno');
     expect(responseBody).toHaveProperty('status', 'available');
 });
 
-test('Update a pet', async ({ request, page }) => {
+test('Update a pet', async ({ request }) => {
 
     const url = 'https://petstore.swagger.io/v2';
     const petData = {
-        "id": 123,
+        "id": dynamicId,
         "category": {
             "id": 1,
             "name": "Dog"
@@ -75,17 +75,17 @@ test('Update a pet', async ({ request, page }) => {
 
     // Parse the JSON response
     const responseBody = await response.json();
-    expect(responseBody).toHaveProperty('id', 123);
+    expect(responseBody).toHaveProperty('id', dynamicId);
     expect(responseBody).toHaveProperty('name', 'Marcelo');
     expect(responseBody).toHaveProperty('status', 'available');
 });
 
-test('Get a pet', async ({ request, page }) => {
+test('Delete the updated pet', async ({ request }) => {
 
     const url = 'https://petstore.swagger.io/v2';
-    const petId = '123';
+    const petId = dynamicId;
 
-    const response = await request.get(`${url}/pet/${petId}`, {
+    const response = await request.delete(`${url}/pet/${petId}`, {
         headers: {
             'Content-Type': 'application/json',
         }
@@ -96,7 +96,5 @@ test('Get a pet', async ({ request, page }) => {
 
     // Parse the JSON response
     const responseBody = await response.json();
-    expect(responseBody).toHaveProperty('id', 123);
-    expect(responseBody).toHaveProperty('name', 'Marcelo');
-    expect(responseBody).toHaveProperty('status', 'available');
+    expect(responseBody).toHaveProperty('message', String(dynamicId));
 });
