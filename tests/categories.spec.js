@@ -25,16 +25,19 @@ test('Verify that all categories exist (Phones, Laptops, Monitors', async ({ pag
 
 test('Verify that each category contains the right products', async ({ page }) => {
     loginPage = new LoginPage(page);
-    categoriesPage = new CategoriesPage(page);
     const userName = 'admin';
     const password = 'admin';
 
     await loginPage.login(userName, password);
-    categoriesPage = new CategoriesPage(page); // ✅ initialize AFTER login
+    await expect(loginPage.welcomeText).toHaveText('Welcome admin');
+    categoriesPage = new CategoriesPage(page);
     const categories = ['Phones', 'Laptops', 'Monitors'];
 
     for (const category of categories) {
         await categoriesPage.selectCategory(category);
+        await page.waitForTimeout(2000);
+        // Ensure the product list is loaded after selecting the category
+        await categoriesPage.productList.waitFor({ state: 'visible' });
         const productTitles = await categoriesPage.getProductTitles();
 
         expect(productTitles.length).toBeGreaterThan(0);

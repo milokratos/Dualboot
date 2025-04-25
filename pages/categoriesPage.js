@@ -10,6 +10,13 @@ export class CategoriesPage {
         this.monitorsLink = page.locator('a:has-text("Monitors")');
         this.productList = page.locator('#tbodyid');
         this.productTitles = page.locator('#tbodyid .card-title a.hrefch');
+
+
+        this.categoryLinks = {
+            phones: this.phonesLink,
+            laptops: this.laptopsLink,
+            monitors: this.monitorsLink
+        };
     }
 
     async selectCategory(category) {
@@ -35,9 +42,12 @@ export class CategoriesPage {
 
         const keywords = {
             phones: ['galaxy', 'nokia', 'nexus', 'iphone', 'xperia', 'htc'],
-            laptops: ['vaio', 'macbook'],
-            monitors: ['monitor', 'full hd']
+            laptops: ['vaio', 'macbook', 'dell'],
+            monitors: ['apple', 'asus']
         };
+
+        // Log the keywords for debugging purposes
+        console.log(`Category: ${lcCategory}, Keywords: ${keywords[lcCategory]}`);
 
         return keywords[lcCategory]?.some(keyword => lcTitle.includes(keyword)) || false;
     }
